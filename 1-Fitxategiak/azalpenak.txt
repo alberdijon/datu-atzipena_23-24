@@ -1,0 +1,118 @@
+    //Este ccódigo se cierra automaticamente cuando se cierra el try
+
+    	static String readFirstLineFromFile(String path) throws IOException {
+	    try (FileReader fr = new FileReader(path);
+	         BufferedReader br = new BufferedReader(fr)) {
+	        return br.readLine();
+	        }
+	    }
+    
+     //Este ccódigo se cierra en el bloque de finally
+
+    static String readFirstLineFromFileWithFinallyBlock(String path) throws IOException {
+   
+        FileReader fr = new FileReader(path);
+        BufferedReader br = new BufferedReader(fr);
+        try {
+            return br.readLine();
+        } finally {
+            br.close();
+            fr.close();
+        }
+    }
+
+/*
+Sin embargo, es mucho mejor usar el primer código porque en caso de error al utilizar un try-with como en el primer caso se liberaran los recursos automaticamente.
+Recursos en Programación: En programación, un recurso se refiere a cualquier recurso del sistema que un programa utiliza durante su ejecución. 
+    Estos recursos pueden incluir, entre otros, archivos, conexiones de red, memoria, dispositivos de hardware, bases de datos, y otros objetos que un programa necesita para funcionar.
+Es importante liberar activamente los rescursos y no unicamente confiar en el GC (Garbage Collector:n componente en muchos lenguajes de programación que se encarga de liberar la memoria utilizada por objetos que ya no son accesibles o referenciados en el programa.)
+Porque, el GC generalmente se encarga solo de la gestión de memoria y no necesariamente de otros tipos de recursos. Si no se liberan adecuadamente los recursos: El sistema operativo todavía considera que el recurso está en uso, lo que puede llevar a problemas de agotamiento de recursos en el sistema.
+*/
+
+/////////////////////////////////////////////
+
+
+//Este código coge todos los archivos dentro de un zip y enumera todos los nombres de los archivos en un txt poniendo cada nombre en una linea(Si no entiendo algo tengo explicado todo linea por linea en chat-gpt https://chat.openai.com/share/5ece0d49-ad30-4e3f-848e-050339d9f733 en este link) 
+
+public static void writeToFileZipFileContents(String zipFileName,
+                                           String outputFileName)
+                                           throws java.io.IOException {
+
+    java.nio.charset.Charset charset =
+         java.nio.charset.StandardCharsets.US_ASCII;
+    java.nio.file.Path outputFilePath =
+         java.nio.file.Paths.get(outputFileName);
+
+    // Open zip file and create output file with 
+    // try-with-resources statement
+
+    try (
+        java.util.zip.ZipFile zf =
+             new java.util.zip.ZipFile(zipFileName);
+        java.io.BufferedWriter writer = 
+            java.nio.file.Files.newBufferedWriter(outputFilePath, charset)
+    ) {
+        // Enumerate each entry
+        for (java.util.Enumeration entries =
+                                zf.entries(); entries.hasMoreElements();) {
+            // Get the entry name and write it to the output file
+            String newLine = System.getProperty("line.separator");
+            String zipEntryName =
+                 ((java.util.zip.ZipEntry)entries.nextElement()).getName() +
+                 newLine;
+            writer.write(zipEntryName, 0, zipEntryName.length());
+        }
+    }
+}
+
+
+Diferentes formas de leer y escribir un documento:
+1-Byte a byte
+2-Caracter a caracter
+3-Linea a linea
+
+Las diferencias en el código son a la hora de leer y escribir los objetos necesarios són iguales.
+
+1-BYTE A BYTE
+
+try (FileInputStream fis = new FileInputStream(path);
+             FileOutputStream fos = new FileOutputStream(outputFileName)
+        ) {
+            byte[] buffer = new byte[1024];
+
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                fos.write(buffer, 0, bytesRead);
+            }
+        }
+Utilizamos FileInputStream para leer byte a byte y FileOutputStream para escribir byte a byte.
+Luego creamos un buffer para hacer menos llamadas al sistema optimizando el programa ya que así pediremos bytes de 1024 en 1024 y no de 1 en 1.
+Creamos un objeto que guarda los bytes leidos y en un while vamos leyendo y escribiendo bytes de 1024 en 1024.
+
+2-CARACTER A CARACTER
+try (FileReader reader = new FileReader(path);
+             FileWriter writer = new FileWriter(outputFileName)
+        ) {
+            int charRead;
+            while ((charRead = reader.read()) != -1) {
+                writer.write(charRead);
+            }
+        }
+Utilizamos BufferedReader para leer y FileWriter para escribir caracter a caracter.
+Aqui no utilizamos el buffer como antes porque la cantidad de llamadas es menor.
+Creamos un objeto que guarda el caracter leido y en un while vamos leyend y escribiendo caracteres de 1 en 1.
+
+3-LINEA A LINEA
+        try (FileReader fr = new FileReader(path);
+             BufferedReader br = new BufferedReader(fr);
+             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName))
+        ) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                writer.write(line);
+                writer.newLine();
+            }
+        }
+
+Funciona igual que haciendolo caracter a caracter con la unica diferencia de que cambiaremos los metodos:
+Utilizamos readLine en vez de read.
