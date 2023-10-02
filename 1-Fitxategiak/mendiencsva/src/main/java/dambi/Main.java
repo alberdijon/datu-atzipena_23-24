@@ -112,16 +112,16 @@ public class Main {
 
     public static void met3() throws FileNotFoundException, IOException{
 
-                try (FileReader reader = new FileReader("mendiencsva\\Mendiak.csv");
-                     BufferedReader br = new BufferedReader(reader);
-                     FileWriter fl = new FileWriter("mendiencsva\\Gipuzkoa.csv");
-                     BufferedWriter writer1 = new BufferedWriter(fl);
-                     FileWriter f2 = new FileWriter("mendiencsva\\Araba.csv");
-                     BufferedWriter writer2 = new BufferedWriter(f2);
-                     FileWriter f3 = new FileWriter("mendiencsva\\Bizkaia.csv");
-                     BufferedWriter writer3 = new BufferedWriter(f3);
-                     FileWriter f4 = new FileWriter("mendiencsva\\Nafarroa.csv");
-                     BufferedWriter writer4 = new BufferedWriter(f4);
+        try (FileReader reader = new FileReader("mendiencsva\\Mendiak.csv");
+                BufferedReader br = new BufferedReader(reader);
+                FileWriter fl = new FileWriter("mendiencsva\\Gipuzkoa.csv");
+                BufferedWriter writer1 = new BufferedWriter(fl);
+                FileWriter f2 = new FileWriter("mendiencsva\\Araba.csv");
+                BufferedWriter writer2 = new BufferedWriter(f2);
+                FileWriter f3 = new FileWriter("mendiencsva\\Bizkaia.csv");
+                BufferedWriter writer3 = new BufferedWriter(f3);
+                FileWriter f4 = new FileWriter("mendiencsva\\Nafarroa.csv");
+                BufferedWriter writer4 = new BufferedWriter(f4);
         ) {
             String line;
             while ((line = br.readLine()) != null) {
